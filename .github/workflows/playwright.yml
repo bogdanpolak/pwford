@@ -21,6 +21,8 @@ jobs:
       env:
         TECHSITE_USER: ${{ secrets.TECHSITE_USER }}
         TECHSITE_PASSWORD: ${{ secrets.TECHSITE_PASSWORD }}
+        OEMIQ_USER: ${{ secrets.OEMIQ_USER }}
+        OEMIQ_PASSWORD: ${{ secrets.OEMIQ_PASSWORD }}
       run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
