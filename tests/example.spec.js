@@ -4,7 +4,13 @@ import { test, expect } from '@playwright/test';
 test('has title', async ({ page }) => {
   const username = process.env.TECHSITE_USER;
   const password = process.env.TECHSITE_PASSWORD;
-  if (!username || !password) {
+  if (username && !password) {
+    console.log('TECHSITE_USER and TECHSITE_PASSWORD must be set in the environment (or in .env)');
+    await page.goto('https://www.motorcraftservice.com/SetCountry');
+    await page.locator("#selectedCountry").selectOption("Canada");
+    await expect(page.locator("#selectedLanguage >> option:checked")).toHaveText("English");
+    return
+  } else if (!username || !password) {
     throw new Error('TECHSITE_USER and TECHSITE_PASSWORD must be set in the environment (or in .env)');
   }
 
