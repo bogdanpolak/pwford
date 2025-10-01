@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
+test('login into TechSite and get subscription URL', async ({ page }) => {
   const username = process.env.TECHSITE_USER;
   const password = process.env.TECHSITE_PASSWORD;
   if (username && !password) {
@@ -20,20 +20,23 @@ test('has title', async ({ page }) => {
   await expect(page.locator("#selectedLanguage >> option:checked")).toHaveText("English");
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.locator("#btnLogin")).toBeVisible();
+  console.log(`Opened ${page.url()}. Redty to login...`);
+
   await page.waitForTimeout(1000);
   await page.locator("#btnLogin").click();
   await page.locator("#signInName").fill(username);
   await page.locator("#password").fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
-
   await page.waitForURL(/MySubscriptions/);
+  console.log(`Signed into ${page.url()}. Redty open fordtechservice.dealerconnection.com...`);
+
   var locatorSubscriptionLink = page.locator("table > tbody > tr:first-child > td:first-child > a");
   await expect(locatorSubscriptionLink).toBeVisible();
   await page.waitForTimeout(1000);
   var subscriptionLink = await locatorSubscriptionLink.getAttribute("href") ?? "";
-  // var subscriptionUrl = CombineUrl(page.url(), subscriptionLink);
   var subscriptionUrl = new URL(subscriptionLink, page.url()).toString();
-  console.log(`Subscription URL: ${subscriptionUrl}`);
+
+  console.log(`Goto ("${subscriptionUrl}")`);
   await page.goto(subscriptionUrl);
   await page.waitForURL("https://www.fordtechservice.dealerconnection.com/");
   await expect(page.getByRole("heading", { name: "Ford Service Info" })).toBeVisible();
